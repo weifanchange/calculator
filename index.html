@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Calculator</title>
+        <style>
+            #app div{
+                border:1px solid #000;
+                position: absolute;
+                left:50%;
+                top:50%;
+                padding:3px;
+                margin-top:-95px;
+                margin-left:-60px;
+            }
+            button, input[type="button"]{
+                width: 30px;
+                height: 30px;
+            }
+            #app p{
+                border: 1px solid black;
+                width:120px; 
+                height:25px;
+                margin: 0 0 8px 0;
+            }
+        </style>
+    </head>
+    <body>
+
+        <div id="app">
+            <div>
+                <p>{{msg}}</p>
+                <!-- <button v-for="i in list" v-if="i.col==0" v-on:click='cal_func(i)'>{{i.btnName}}</button><br>
+                <button v-for="i in list" v-if="i.col==1" v-on:click='cal_func(i)'>{{i.btnName}}</button><br>
+                <button v-for="i in list" v-if="i.col==2" v-on:click='cal_func(i)'>{{i.btnName}}</button><br>
+                <button v-for="i in list" v-if="i.col==3" v-on:click='cal_func(i)'>{{i.btnName}}</button><br>
+                <button v-for="i in list" v-if="i.col==4" v-on:click='cal_func(i)'>{{i.btnName}}</button><br> -->
+                <input type="button" v-for="i in list" v-if="i.col==0" v-on:click='cal_func(i)' v-bind:value="i.btnName"><br>
+                <input type="button" v-for="i in list" v-if="i.col==1" v-on:click='cal_func(i)' v-bind:value="i.btnName"><br>
+                <input type="button" v-for="i in list" v-if="i.col==2" v-on:click='cal_func(i)' v-bind:value="i.btnName"><br>
+                <input type="button" v-for="i in list" v-if="i.col==3" v-on:click='cal_func(i)' v-bind:value="i.btnName"><br>
+                <input type="button" v-for="i in list" v-if="i.col==4" v-on:click='cal_func(i)' v-bind:value="i.btnName"><br>
+            </div>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.0.1/vue.min.js"></script>
+        <script>
+            var temp='0';
+            var strOpt='';
+            new Vue({
+                el:'#app',
+                data: {
+                    msg:'0',
+                    msgBr:'<br>',
+                    list: [
+                        { col:0, btnName: 'C' },
+                      
+                        { col:1, btnName: '7' },
+                        { col:1, btnName: '8' },
+                        { col:1, btnName: '9' },
+                        { col:1, btnName: '+' },
+                    
+                        { col:2, btnName: '4' },
+                        { col:2, btnName: '5' },
+                        { col:2, btnName: '6' },
+                        { col:2, btnName: '-' },
+                    
+                        { col:3, btnName: '1' },
+                        { col:3, btnName: '2' },
+                        { col:3, btnName: '3' },
+                        { col:3, btnName: '*' },
+                    
+                        { col:4, btnName: '0' },
+                        { col:4, btnName: '.' },
+                        { col:4, btnName: '=' },
+                        { col:4, btnName: '/' },
+                    ],
+                },
+                methods:{
+                    cal_func:function(num)
+                    {
+                        var b_option="";
+                        var str1='0';
+                        var str2='0';
+                        
+                        b_option = num.btnName;
+                        
+                        if(b_option == '+'||b_option == '-'||b_option == '*'||b_option == '/')
+                        {
+                            temp = this.ans_cal(temp, this.msg);
+                            strOpt = b_option;
+                            this.msg='0';
+                        }
+                        else if(b_option == '=')
+                        {
+                            temp = this.ans_cal(temp, this.msg);
+                            this.msg = temp;
+                            strOpt = b_option;
+                        }
+                        else if(b_option == 'C')
+                        {
+                            this.msg = '0';
+                            strOpt='';
+                            b_option='';
+                            temp='0';
+                        }
+                        else if(this.msg == '0')
+                        {
+                            if(b_option=='.')
+                            {
+                                this.msg+=b_option;
+                            }
+                            else{
+                                this.msg=b_option;
+                            }
+                        }
+                        else
+                        {
+                            if(strOpt == '=')
+                            {
+                                strOpt='';
+                                this.msg='';
+                            }
+                            this.msg+=b_option;
+                        }
+                    },
+                    ans_cal:function(num1,num2){
+                        var num;
+                        switch(strOpt)
+                        {
+                        case '+':
+                        num = this.cal_add(num1,num2);
+                            break;
+                        case '-':
+                        num = this.cal_sub(num1,num2);
+                            break;
+                        case '*':
+                        num = this.cal_mul(num1,num2);
+                            break;
+                        case '/':
+                        num = this.cal_div(num1,num2);
+                            break;
+                        default:
+                        num = num2;
+                            break;
+                        }
+                        console.log=num
+                        return num
+                    },
+                    cal_add:function(num1,num2)
+                    {
+                        // return num1+num2
+                        var r1,r2,m;
+                        try{
+                            r1 = num1.toString().split('.')[1].length;
+                        }catch(e){
+                            r1 = 0;
+                        }
+                        try{
+                            r2 = num2.toString().split('.')[1].length;
+                        }catch(e){
+                            r2 = 0;
+                        }
+                        m = Math.pow(10, Math.max(r1, r2));
+                        return Math.round(num1 * m + num2 * m) / m;
+                    },
+                    cal_sub:function(num1,num2)
+                    {
+                        var r1,r2,m;
+                        try{
+                            r1 = num1.toString().split('.')[1].length;
+                        }catch(e){
+                            r1 = 0;
+                        }
+                        try{
+                            r2 = num2.toString().split('.')[1].length;
+                        }catch(e){
+                            r2 = 0;
+                        }
+                        m = Math.pow(10, Math.max(r1, r2));
+                        n = (r1 >= r2) ? r1 : r2;
+                        return Math.round(num1 * m - num2 * m) / m.toFixed(n);
+                    },
+                    cal_mul:function(num1,num2)
+                    {
+                        var m = 0, r1, r2;
+                        var s1 = num1.toString();
+                        var s2 = num2.toString();
+                        try{
+                            m += s1.split('.')[1].length;
+                        }catch(e){}
+                        try{
+                            m += s2.split('.')[1].length;
+                        }catch(e){}
+                        r1 = Number(num1.toString().replace('.',''));
+                        r2 = Number(num2.toString().replace('.',''));
+                        return r1 * r2 / Math.pow(10, m);
+                    },
+                    cal_div:function(num1,num2)
+                    {
+                        var t1,t2,r1,r2;
+                        try{
+                            t1 = num1.toString().split('.')[1].length;
+                        }catch(e){t1 = 0;}
+                        try{
+                            t2 = num2.toString().split('.')[1].length;
+                        }catch(e){t2 = 0;}
+                        r1 = Number(num1.toString().replace('.',''));
+                        r2 = Number(num2.toString().replace('.',''));
+                        return (r1 / r2) * Math.pow(10, t2 - t1);
+                    },
+
+                }
+            });
+
+        </script>
+    </body>
+</html>
